@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "description": "Udacity. React nanodegree. Practice. 04. React & Redux.",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "lint:prettier": "prettier --check .",
+    "lint": "npm run lint:prettier && npm run lint:spell"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/o2sevruk/udacity-react-nanodegree--practice--react-and-redux"
