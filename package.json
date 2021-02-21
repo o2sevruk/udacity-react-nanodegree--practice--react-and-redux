@@ -1,0 +1,35 @@
+{
+  "name": "udacity-react-nanodegree--practice--react-and-redux",
+  "version": "1.0.0",
+  "description": "Udacity. React nanodegree. Practice. 04. React & Redux.",
+  "private": true,
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/o2sevruk/udacity-react-nanodegree--practice--react-and-redux"
+  },
+  "author": "o2sevruk",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/o2sevruk/udacity-react-nanodegree--practice--react-and-redux/issues"
+  },
+  "homepage": "https://github.com/o2sevruk/udacity-react-nanodegree--practice--react-and-redux#readme",
+  "devDependencies": {
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-import": "^2.22.1",
+    "husky": "^5.0.9",
+    "lint-staged": "^10.5.4",
+    "prettier": "^2.2.1"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{css,scss,md,yml,html}": "prettier --write"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}
