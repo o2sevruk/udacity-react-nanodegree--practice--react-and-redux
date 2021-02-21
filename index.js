@@ -5,11 +5,13 @@ function createStore() {
   // 3. Listen to changes on the state.
   // 4. Update the state
 
-  let state
+  let state;
 
-  const getState = () => state
+  const getState = () => state;
 
   return {
-getState,
-  }
+    getState,
+  };
 }
+
+createStore();
