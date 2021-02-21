@@ -10,6 +10,6 @@ function createStore () {
     const getState = () => state
   
     return {
-           getState
+    getState
     }
   }
