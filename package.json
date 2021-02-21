@@ -28,11 +28,11 @@
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
-    "*.{js,md,yml,html}": "lint"
+    "*.{js,md,yml,html}": "yarn lint"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npx mrm lint-staged"
+      "pre-commit": "lint-staged"
     }
   }
 }
