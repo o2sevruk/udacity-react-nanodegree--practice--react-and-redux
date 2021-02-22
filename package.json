@@ -4,8 +4,7 @@
   "description": "Udacity. React nanodegree. Practice. 04. React & Redux.",
   "private": true,
   "scripts": {
-    "lint:prettier": "prettier --write .",
-    "lint": "yarn lint:prettier"
+    "lint:prettier": "prettier --write ."
   },
   "repository": {
     "type": "git",
