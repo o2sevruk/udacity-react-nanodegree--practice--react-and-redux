@@ -1,4 +1,4 @@
-function createStore() {
+function createStore(reducer) {
   // The store should have four parts
   // 1. The state
   // 2. Get the state.
@@ -9,6 +9,12 @@ function createStore() {
   let listeners = [];
 
   const getState = () => state;
+
+  const dispatch = (action) => {
+    state = reducer(state, action);
+
+    listeners.forEach((l) => l());
+  };
 
   const subscribe = (listener) => {
     listeners.push(listener);
@@ -21,17 +27,20 @@ function createStore() {
   return {
     getState,
     subscribe,
+    dispatch,
   };
 }
 
-const store = createStore();
+function todos(state = [], action) {
+  if (action.type === 'ADD_TODO') {
+    return state.concat([action.todo]);
+  }
+
+  return state;
+}
+
+const store = createStore(todos);
 
 store.subscribe(() => {
-  console.log('This state is:', store.getState());
+  console.log('The state was apdated!');
 });
-
-const unsubscribe = store.subscribe(() => {
-  console.log('The state changed');
-});
-
-unsubscribe();
