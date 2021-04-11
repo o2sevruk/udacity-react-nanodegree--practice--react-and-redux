@@ -16,9 +16,7 @@ const $GOALS = '#goals';
 
 // ID Generator
 function generateId() {
-  return (
-    Math.random().toString(36).substring(2) + new Date().getTime().toString(36)
-  );
+  return Math.random().toString(36).substring(2) + new Date().getTime().toString(36);
 }
 
 // Action Creators
@@ -99,9 +97,7 @@ function todos(state = [], action) {
     case REMOVE_TODO:
       return state.filter((todo) => todo.id !== action.id);
     case TOGGLE_TODO:
-      return state.map((todo) => (todo.id !== action.id
-        ? todo.id
-        : ({ ...todo, complete: !todo.complete })));
+      return state.map((todo) => (todo.id !== action.id ? todo.id : { ...todo, complete: !todo.complete }));
     default:
       return state;
   }

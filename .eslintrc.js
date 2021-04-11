@@ -7,5 +7,6 @@ module.exports = {
     'no-unused-vars': 'off',
     'no-use-before-define': 'off',
     'no-shadow': 'off',
+    'max-len': 'off',
   },
 };
