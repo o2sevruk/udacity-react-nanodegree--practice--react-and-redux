@@ -16,7 +16,9 @@ const $GOALS = '#goals';
 
 // ID Generator
 function generateId() {
-  return Math.random().toString(36).substring(2) + new Date().getTime().toString(36);
+  return (
+    Math.random().toString(36).substring(2) + new Date().getTime().toString(36)
+  );
 }
 
 // Action Creators
@@ -97,7 +99,11 @@ function todos(state = [], action) {
     case REMOVE_TODO:
       return state.filter((todo) => todo.id !== action.id);
     case TOGGLE_TODO:
-      return state.map((todo) => (todo.id !== action.id ? todo.id : { ...todo, complete: !todo.complete }));
+      return state.map((todo) =>
+        todo.id !== action.id
+          ? todo.id
+          : Object.assign({}, todo, { complete: !todo.complete })
+      );
     default:
       return state;
   }
@@ -130,10 +136,10 @@ store.subscribe(() => {
   document.querySelector($TODOS).innerHTML = '';
   document.querySelector($GOALS).innerHTML = '';
 
-  todos.forEach((el) => {
+  todos.forEach(function (el) {
     addTodoToDOM(el);
   }); // todos.forEach(addTodoToDOM);
-  goals.forEach((el) => {
+  goals.forEach(function (el) {
     addGoalToDOM(el);
   }); // goals.forEach(addGoalToDOM);
 });
@@ -153,7 +159,7 @@ function addTodo() {
       id: generateId(),
       name,
       complete: false,
-    }),
+    })
   );
 }
 
@@ -174,7 +180,7 @@ function addGoal() {
     addGoalAction({
       id: generateId(),
       name,
-    }),
+    })
   );
 }
 
