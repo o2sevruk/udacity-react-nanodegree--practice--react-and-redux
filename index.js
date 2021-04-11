@@ -125,7 +125,26 @@ function app(state = {}, action) {
   };
 }
 
+// APP
 const store = createStore(app);
+
+store.subscribe(() => {
+  const { todos, goals } = store.getState();
+
+  document.querySelector($TODOS).innerHTML = '';
+  document.querySelector($GOALS).innerHTML = '';
+
+  todos.forEach((el) => {
+    addTodoToDOM(el);
+  }); // todos.forEach(addTodoToDOM);
+  goals.forEach((el) => {
+    addGoalToDOM(el);
+  }); // goals.forEach(addGoalToDOM);
+});
+
+document.querySelector($TODO_BTN).addEventListener('click', addTodo);
+
+document.querySelector($GOAL_BTN).addEventListener('click', addGoal);
 
 // UI
 function addTodo() {
@@ -142,6 +161,14 @@ function addTodo() {
   );
 }
 
+function addTodoToDOM(todo) {
+  const node = document.createElement('li');
+  const text = document.createTextNode(todo.name);
+  node.appendChild(text);
+
+  document.querySelector($TODOS).appendChild(node);
+}
+
 function addGoal() {
   const goal = document.querySelector($GOAL_FIELD);
   const name = goal.value;
@@ -155,11 +182,10 @@ function addGoal() {
   );
 }
 
-// APP
-store.subscribe(() => {
-  console.log('The current state is: ', store.getState());
-});
+function addGoalToDOM(goal) {
+  const node = document.createElement('li');
+  const text = document.createTextNode(goal.name);
+  node.appendChild(text);
 
-document.querySelector($TODO_BTN).addEventListener('click', addTodo);
-
-document.querySelector($GOAL_BTN).addEventListener('click', addGoal);
+  document.querySelector($GOALS).appendChild(node);
+}
