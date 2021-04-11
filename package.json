@@ -4,6 +4,7 @@
   "description": "Udacity. React nanodegree. Practice. 04. React & Redux.",
   "private": true,
   "scripts": {
+    "lint": "eslint && prettier --write .",
     "lint:prettier": "prettier --write ."
   },
   "repository": {
@@ -18,16 +19,14 @@
   "homepage": "https://github.com/o2sevruk/udacity-react-nanodegree--practice--react-and-redux#readme",
   "devDependencies": {
     "eslint": "^7.19.0",
-    "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^7.2.0",
-    "eslint-plugin-import": "^2.22.1",
     "husky": "^4.3.8",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
-    "*.{js,html,md}": "prettier --write"
+    "*.{js,html,md}": "prettier --write ."
   },
   "husky": {
     "hooks": {
