@@ -1,37 +1,3 @@
-// STORE
-function createStore(reducer) {
-  // The store should have four parts
-  // 1. The state
-  // 2. Get the state.
-  // 3. Listen to changes on the state.
-  // 4. Update the state
-
-  let state;
-  let listeners = [];
-
-  const getState = () => state;
-
-  const dispatch = (action) => {
-    state = reducer(state, action);
-
-    listeners.forEach((l) => l());
-  };
-
-  const subscribe = (listener) => {
-    listeners.push(listener);
-
-    return () => {
-      listeners = listeners.filter((l) => l !== listener);
-    };
-  };
-
-  return {
-    getState,
-    subscribe,
-    dispatch,
-  };
-}
-
 // Actions
 const ADD_TODO = 'ADD_TODO';
 const REMOVE_TODO = 'REMOVE_TODO';
@@ -39,6 +5,21 @@ const TOGGLE_TODO = 'TOGGLE_TODO';
 
 const ADD_GOAL = 'ADD_GOAL';
 const REMOVE_GOAL = 'REMOVE_GOAL';
+
+const $TODO_FIELD = '#todo';
+const $TODO_BTN = '#todoBtn';
+const $TODOS = '#todos';
+
+const $GOAL_FIELD = '#goal';
+const $GOAL_BTN = '#goalBtn';
+const $GOALS = '#goals';
+
+// ID Generator
+function generateId() {
+  return (
+    Math.random().toString(36).substring(2) + new Date().getTime().toString(36)
+  );
+}
 
 // Action Creators
 function addTodoAction(todo) {
@@ -76,6 +57,40 @@ function removeGoalAction(id) {
   };
 }
 
+// STORE
+function createStore(reducer) {
+  // The store should have four parts
+  // 1. The state
+  // 2. Get the state.
+  // 3. Listen to changes on the state.
+  // 4. Update the state
+
+  let state;
+  let listeners = [];
+
+  const getState = () => state;
+
+  const dispatch = (action) => {
+    state = reducer(state, action);
+
+    listeners.forEach((l) => l());
+  };
+
+  const subscribe = (listener) => {
+    listeners.push(listener);
+
+    return () => {
+      listeners = listeners.filter((l) => l !== listener);
+    };
+  };
+
+  return {
+    getState,
+    subscribe,
+    dispatch,
+  };
+}
+
 // REDUCERS
 function todos(state = [], action) {
   switch (action.type) {
@@ -110,9 +125,41 @@ function app(state = {}, action) {
   };
 }
 
-// APP
 const store = createStore(app);
 
+// UI
+function addTodo() {
+  const todo = document.querySelector($TODO_FIELD);
+  const name = todo.value;
+  todo.value = '';
+
+  store.dispatch(
+    addTodoAction({
+      id: generateId(),
+      name,
+      complete: false,
+    }),
+  );
+}
+
+function addGoal() {
+  const goal = document.querySelector($GOAL_FIELD);
+  const name = goal.value;
+  goal.value = '';
+
+  store.dispatch(
+    addGoalAction({
+      id: generateId(),
+      name,
+    }),
+  );
+}
+
+// APP
 store.subscribe(() => {
   console.log('The current state is: ', store.getState());
 });
+
+document.querySelector($TODO_BTN).addEventListener('click', addTodo);
+
+document.querySelector($GOAL_BTN).addEventListener('click', addGoal);
