@@ -1,4 +1,3 @@
 # Ignore settings files:
-.eslintrc.js
 prettier.config.js
 lint-staged.config.js
