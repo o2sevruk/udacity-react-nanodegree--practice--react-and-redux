@@ -25,7 +25,7 @@
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
-    "*.{js,html,md}": "prettier --write"
+    "*.{js,html,md}": "prettier --write ."
   },
   "husky": {
     "hooks": {
