@@ -22,6 +22,7 @@ function generateId() {
 }
 
 // Action Creators
+// todo
 function addTodoAction(todo) {
   return {
     type: ADD_TODO,
@@ -43,6 +44,7 @@ function toggleTodoAction(id) {
   };
 }
 
+// goal
 function addGoalAction(goal) {
   return {
     type: ADD_GOAL,
@@ -92,6 +94,7 @@ function createStore(reducer) {
 }
 
 // REDUCERS
+// todo
 function todos(state = [], action) {
   switch (action.type) {
     case ADD_TODO:
@@ -101,14 +104,15 @@ function todos(state = [], action) {
     case TOGGLE_TODO:
       return state.map((todo) =>
         todo.id !== action.id
-          ? todo.id
-          : Object.assign({}, todo, { complete: !todo.complete })
+          ? todo
+          : Object.assign({}, todo, { complete: !todo.complete }),
       );
     default:
       return state;
   }
 }
 
+// goal
 function goals(state = [], action) {
   switch (action.type) {
     case ADD_GOAL:
@@ -136,12 +140,8 @@ store.subscribe(() => {
   document.querySelector($TODOS).innerHTML = '';
   document.querySelector($GOALS).innerHTML = '';
 
-  todos.forEach(function (el) {
-    addTodoToDOM(el);
-  }); // todos.forEach(addTodoToDOM);
-  goals.forEach(function (el) {
-    addGoalToDOM(el);
-  }); // goals.forEach(addGoalToDOM);
+  todos.forEach((el) => addTodoToDOM(el)); // todos.forEach(addTodoToDOM);
+  goals.forEach((el) => addGoalToDOM(el)); // goals.forEach(addGoalToDOM);
 });
 
 document.querySelector($TODO_BTN).addEventListener('click', addTodo);
@@ -149,6 +149,7 @@ document.querySelector($TODO_BTN).addEventListener('click', addTodo);
 document.querySelector($GOAL_BTN).addEventListener('click', addGoal);
 
 // UI
+// todo
 function addTodo() {
   const todo = document.querySelector($TODO_FIELD);
   const name = todo.value;
@@ -159,7 +160,7 @@ function addTodo() {
       id: generateId(),
       name,
       complete: false,
-    })
+    }),
   );
 }
 
@@ -167,10 +168,16 @@ function addTodoToDOM(todo) {
   const node = document.createElement('li');
   const text = document.createTextNode(todo.name);
   node.appendChild(text);
+  node.style.textDecoration = todo.complete ? 'line-through' : 'none';
+
+  node.addEventListener('click', () => {
+    store.dispatch(toggleTodoAction(todo.id));
+  });
 
   document.querySelector($TODOS).appendChild(node);
 }
 
+// goal
 function addGoal() {
   const goal = document.querySelector($GOAL_FIELD);
   const name = goal.value;
@@ -180,7 +187,7 @@ function addGoal() {
     addGoalAction({
       id: generateId(),
       name,
-    })
+    }),
   );
 }
 
