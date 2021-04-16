@@ -91,6 +91,7 @@ function todos(state = [], action) {
       return state;
   }
 }
+
 // goal
 function goals(state = [], action) {
   switch (action.type) {
