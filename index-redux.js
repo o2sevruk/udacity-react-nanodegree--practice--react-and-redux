@@ -34,6 +34,29 @@ const checker = (store) => (next) => (action) => {
 
   return next(action);
 };
+const logger = (store) => (next) => (action) => {
+  console.group(action.type);
+  console.log('The action: ', action);
+  const result = next(action);
+  console.log('The current store: ', store.getState());
+  console.groupEnd();
+
+  return result;
+};
+const addNewTodo = (store) => (next) => (action) => {
+  if (action.type === ADD_TODO) {
+    alert(`Don't forget to ${action.todo.name}!`);
+  }
+
+  return next(action);
+};
+const addNewGoal = (store) => (next) => (action) => {
+  if (action.type === ADD_GOAL) {
+    alert("That's a great goal!");
+  }
+
+  return next(action);
+};
 
 // Action Creators
 // todo
@@ -110,7 +133,7 @@ const store = Redux.createStore(
     todos,
     goals,
   }),
-  Redux.applyMiddleware(checker),
+  Redux.applyMiddleware(checker, logger, addNewTodo, addNewGoal),
 );
 
 store.subscribe(() => {
