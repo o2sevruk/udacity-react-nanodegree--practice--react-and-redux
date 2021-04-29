@@ -83,6 +83,41 @@ function toggleTodoAction(id) {
   };
 }
 
+function addTodoHandler(name, cb) {
+  return (dispatch) => {
+    return API.saveTodo(name)
+      .catch(() => {
+        alert('An error occurred. Try again!');
+      })
+      .then((todo) => {
+        dispatch(addTodoAction(todo));
+        cb();
+      });
+  };
+}
+
+function deleteTodoHandler(todo) {
+  return (dispatch) => {
+    dispatch(removeTodoAction(todo.id));
+
+    return API.deleteTodo(todo.id).catch(() => {
+      alert('An error occurred. Try again!');
+      dispatch(addTodoAction(todo));
+    });
+  };
+}
+
+function toggleTodoHandler(id) {
+  return (dispatch) => {
+    dispatch(toggleTodoAction(id));
+
+    return API.saveTodoToggle(id).catch(() => {
+      alert('An error occurred. Try again!');
+      dispatch(toggleTodoAction(id));
+    });
+  };
+}
+
 // goal
 function addGoalAction(goal) {
   return {
@@ -95,6 +130,41 @@ function removeGoalAction(id) {
   return {
     type: REMOVE_GOAL,
     id,
+  };
+}
+
+function addGoalHandler(name, cb) {
+  return (dispatch) => {
+    return API.saveGoal(name)
+      .catch(() => {
+        alert('An error occurred. Try again!');
+      })
+      .then((goal) => {
+        dispatch(addGoalAction(goal));
+        cb();
+      });
+  };
+}
+
+function deleteGoalHandler(goal) {
+  return (dispatch) => {
+    dispatch(removeGoalAction(goal.id));
+
+    return API.deleteGoal(goal.id).catch(() => {
+      alert('An error occurred. Try again!');
+      dispatch(addGoalAction(goal));
+    });
+  };
+}
+
+// app
+function handleInitialData() {
+  return (dispatch) => {
+    return Promise.all([API.fetchTodos(), API.fetchGoals()]).then(
+      ([todos, goals]) => {
+        dispatch(receiveDataAction(todos, goals));
+      },
+    );
   };
 }
 
@@ -159,5 +229,11 @@ const store = Redux.createStore(
     goals,
     loading,
   }),
-  Redux.applyMiddleware(checker, logger, addNewTodo, addNewGoal),
+  Redux.applyMiddleware(
+    checker,
+    ReduxThunk.default,
+    logger,
+    addNewTodo,
+    addNewGoal,
+  ),
 );
