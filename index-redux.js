@@ -6,6 +6,8 @@ const TOGGLE_TODO = 'TOGGLE_TODO';
 const ADD_GOAL = 'ADD_GOAL';
 const REMOVE_GOAL = 'REMOVE_GOAL';
 
+const RECEIVE_DATA = 'RECEIVE_DATA';
+
 const $TODO_FIELD = '#todo';
 const $TODO_BTN = '#todoBtn';
 const $TODOS = '#todos';
@@ -96,6 +98,15 @@ function removeGoalAction(id) {
   };
 }
 
+// shared
+function receiveDataAction(todos, goals) {
+  return {
+    type: RECEIVE_DATA,
+    todos,
+    goals,
+  };
+}
+
 // REDUCERS
 // todo
 function todos(state = [], action) {
@@ -110,6 +121,8 @@ function todos(state = [], action) {
           ? todo
           : Object.assign({}, todo, { complete: !todo.complete }),
       );
+    case RECEIVE_DATA:
+      return action.todos;
     default:
       return state;
   }
@@ -122,6 +135,18 @@ function goals(state = [], action) {
       return [...state, action.goal];
     case REMOVE_GOAL:
       return state.filter((goal) => goal.id !== action.id);
+    case RECEIVE_DATA:
+      return action.goals;
+    default:
+      return state;
+  }
+}
+
+// loading
+function loading(state = true, action) {
+  switch (action.type) {
+    case RECEIVE_DATA:
+      return false;
     default:
       return state;
   }
@@ -132,92 +157,7 @@ const store = Redux.createStore(
   Redux.combineReducers({
     todos,
     goals,
+    loading,
   }),
   Redux.applyMiddleware(checker, logger, addNewTodo, addNewGoal),
 );
-
-store.subscribe(() => {
-  const { todos, goals } = store.getState();
-
-  document.querySelector($TODOS).innerHTML = '';
-  document.querySelector($GOALS).innerHTML = '';
-
-  todos.forEach((el) => addTodoToDOM(el)); // todos.forEach(addTodoToDOM);
-  goals.forEach((el) => addGoalToDOM(el)); // goals.forEach(addGoalToDOM);
-});
-
-document.querySelector($TODO_BTN).addEventListener('click', addTodo);
-
-document.querySelector($GOAL_BTN).addEventListener('click', addGoal);
-
-// UI
-function createRemoveBtn(cb) {
-  const node = document.createElement('button');
-  const text = document.createTextNode('X');
-  node.type = 'button';
-  node.appendChild(text);
-
-  node.addEventListener('click', cb);
-
-  return node;
-}
-
-// todo
-function addTodo() {
-  const todo = document.querySelector($TODO_FIELD);
-  const name = todo.value;
-  todo.value = '';
-
-  store.dispatch(
-    addTodoAction({
-      id: generateId(),
-      name,
-      complete: false,
-    }),
-  );
-}
-
-function addTodoToDOM(todo) {
-  const node = document.createElement('li');
-  const text = document.createTextNode(todo.name);
-  const removeBtn = createRemoveBtn(() =>
-    store.dispatch(removeTodoAction(todo.id)),
-  );
-
-  node.appendChild(text);
-  node.appendChild(removeBtn);
-  node.style.textDecoration = todo.complete ? 'line-through' : 'none';
-
-  node.addEventListener('click', () => {
-    store.dispatch(toggleTodoAction(todo.id));
-  });
-
-  document.querySelector($TODOS).appendChild(node);
-}
-
-// goal
-function addGoal() {
-  const goal = document.querySelector($GOAL_FIELD);
-  const name = goal.value;
-  goal.value = '';
-
-  store.dispatch(
-    addGoalAction({
-      id: generateId(),
-      name,
-    }),
-  );
-}
-
-function addGoalToDOM(goal) {
-  const node = document.createElement('li');
-  const text = document.createTextNode(goal.name);
-  const removeBtn = createRemoveBtn(() =>
-    store.dispatch(removeGoalAction(goal.id)),
-  );
-
-  node.appendChild(text);
-  node.appendChild(removeBtn);
-
-  document.querySelector($GOALS).appendChild(node);
-}
