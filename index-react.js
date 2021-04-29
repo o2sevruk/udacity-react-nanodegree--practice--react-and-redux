@@ -28,24 +28,32 @@ class Todos extends React.Component {
   addItem = (e) => {
     e.preventDefault();
 
-    const name = this.input.value;
-    this.input.value = '';
-
-    this.props.store.dispatch(
-      addTodoAction({
-        id: generateId(),
-        name,
-        complete: false,
-      }),
-    );
+    return API.saveTodo(this.input.value)
+      .catch(() => {
+        alert('An error occurred. Try again!');
+      })
+      .then((todo) => {
+        this.props.store.dispatch(addTodoAction(todo));
+        this.input.value = '';
+      });
   };
 
   removeItem = (todo) => {
     this.props.store.dispatch(removeTodoAction(todo.id));
+
+    return API.deleteTodo(todo.id).catch(() => {
+      alert('An error occurred. Try again!');
+      this.props.store.dispatch(addTodoAction(todo));
+    });
   };
 
   toggleItem = (id) => {
     this.props.store.dispatch(toggleTodoAction(id));
+
+    return API.saveTodoToggle(id).catch(() => {
+      alert('An error occurred. Try again!');
+      this.props.store.dispatch(toggleTodoAction(id));
+    });
   };
 
   render() {
@@ -77,19 +85,23 @@ class Goals extends React.Component {
   addItem = (e) => {
     e.preventDefault();
 
-    const name = this.input.value;
-    this.input.value = '';
-
-    this.props.store.dispatch(
-      addGoalAction({
-        id: generateId(),
-        name,
-      }),
-    );
+    return API.saveGoal(this.input.value)
+      .catch(() => {
+        alert('An error occurred. Try again!');
+      })
+      .then((goal) => {
+        this.props.store.dispatch(addGoalAction(goal));
+        this.input.value = '';
+      });
   };
 
   removeItem = (goal) => {
     this.props.store.dispatch(removeGoalAction(goal.id));
+
+    return API.deleteGoal(goal.id).catch(() => {
+      alert('An error occurred. Try again!');
+      this.props.store.dispatch(addGoalAction(goal));
+    });
   };
 
   render() {
@@ -114,6 +126,8 @@ class Goals extends React.Component {
 
 class App extends React.Component {
   componentDidMount() {
+    console.log(API);
+
     const { store } = this.props;
 
     Promise.all([API.fetchTodos(), API.fetchGoals()]).then(([todos, goals]) => {
