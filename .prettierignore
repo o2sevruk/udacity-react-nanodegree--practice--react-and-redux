@@ -1,0 +1,3 @@
+# Ignore settings files:
+prettier.config.js
+lint-staged.config.js
