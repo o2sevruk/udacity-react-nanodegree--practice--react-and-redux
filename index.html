@@ -6,27 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ToDos / Goals</title>
 
+    <script src="https://unpkg.com/react@16.3.0-alpha.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16.3.0-alpha.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
+    <script src="https://unpkg.com/redux-thunk@2.2.0/dist/redux-thunk.min.js"></script>
+    <script src="https://unpkg.com/react-redux@5.0.6/dist/react-redux.min.js"></script>
+
+    <script src="https://tylermcginnis.com/goals-todos-api/index.js"></script>
   </head>
   <body>
-    <div class="section">
-      <h2>ToDos</h2>
-      <div class="form-group">
-        <input id="todo" type="text" placeholder="Add ToDo" />
-        <button id="todoBtn" type="button">Add ToDo</button>
-      </div>
-      <ul id="todos"></ul>
-    </div>
-
-    <div class="section">
-      <h2>Goals</h2>
-      <div class="form-group">
-        <input id="goal" type="text" placeholder="Add Goal" />
-        <button id="goalBtn" type="button">Add Goal</button>
-      </div>
-      <ul id="goals"></ul>
-    </div>
+    <div id="app"></div>
 
     <script type="text/javascript" src="./index-redux.js"></script>
+    <script type="text/babel" src="./index-react.js"></script>
   </body>
 </html>

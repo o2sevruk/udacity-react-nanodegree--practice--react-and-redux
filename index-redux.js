@@ -6,6 +6,8 @@ const TOGGLE_TODO = 'TOGGLE_TODO';
 const ADD_GOAL = 'ADD_GOAL';
 const REMOVE_GOAL = 'REMOVE_GOAL';
 
+const RECEIVE_DATA = 'RECEIVE_DATA';
+
 const $TODO_FIELD = '#todo';
 const $TODO_BTN = '#todoBtn';
 const $TODOS = '#todos';
@@ -81,6 +83,41 @@ function toggleTodoAction(id) {
   };
 }
 
+function addTodoHandler(name, cb) {
+  return (dispatch) => {
+    return API.saveTodo(name)
+      .catch(() => {
+        alert('An error occurred. Try again!');
+      })
+      .then((todo) => {
+        dispatch(addTodoAction(todo));
+        cb();
+      });
+  };
+}
+
+function deleteTodoHandler(todo) {
+  return (dispatch) => {
+    dispatch(removeTodoAction(todo.id));
+
+    return API.deleteTodo(todo.id).catch(() => {
+      alert('An error occurred. Try again!');
+      dispatch(addTodoAction(todo));
+    });
+  };
+}
+
+function toggleTodoHandler(id) {
+  return (dispatch) => {
+    dispatch(toggleTodoAction(id));
+
+    return API.saveTodoToggle(id).catch(() => {
+      alert('An error occurred. Try again!');
+      dispatch(toggleTodoAction(id));
+    });
+  };
+}
+
 // goal
 function addGoalAction(goal) {
   return {
@@ -93,6 +130,50 @@ function removeGoalAction(id) {
   return {
     type: REMOVE_GOAL,
     id,
+  };
+}
+
+function addGoalHandler(name, cb) {
+  return (dispatch) => {
+    return API.saveGoal(name)
+      .catch(() => {
+        alert('An error occurred. Try again!');
+      })
+      .then((goal) => {
+        dispatch(addGoalAction(goal));
+        cb();
+      });
+  };
+}
+
+function deleteGoalHandler(goal) {
+  return (dispatch) => {
+    dispatch(removeGoalAction(goal.id));
+
+    return API.deleteGoal(goal.id).catch(() => {
+      alert('An error occurred. Try again!');
+      dispatch(addGoalAction(goal));
+    });
+  };
+}
+
+// app
+function handleInitialData() {
+  return (dispatch) => {
+    return Promise.all([API.fetchTodos(), API.fetchGoals()]).then(
+      ([todos, goals]) => {
+        dispatch(receiveDataAction(todos, goals));
+      },
+    );
+  };
+}
+
+// shared
+function receiveDataAction(todos, goals) {
+  return {
+    type: RECEIVE_DATA,
+    todos,
+    goals,
   };
 }
 
@@ -110,6 +191,8 @@ function todos(state = [], action) {
           ? todo
           : Object.assign({}, todo, { complete: !todo.complete }),
       );
+    case RECEIVE_DATA:
+      return action.todos;
     default:
       return state;
   }
@@ -122,6 +205,18 @@ function goals(state = [], action) {
       return [...state, action.goal];
     case REMOVE_GOAL:
       return state.filter((goal) => goal.id !== action.id);
+    case RECEIVE_DATA:
+      return action.goals;
+    default:
+      return state;
+  }
+}
+
+// loading
+function loading(state = true, action) {
+  switch (action.type) {
+    case RECEIVE_DATA:
+      return false;
     default:
       return state;
   }
@@ -132,92 +227,13 @@ const store = Redux.createStore(
   Redux.combineReducers({
     todos,
     goals,
+    loading,
   }),
-  Redux.applyMiddleware(checker, logger, addNewTodo, addNewGoal),
+  Redux.applyMiddleware(
+    checker,
+    ReduxThunk.default,
+    logger,
+    addNewTodo,
+    addNewGoal,
+  ),
 );
-
-store.subscribe(() => {
-  const { todos, goals } = store.getState();
-
-  document.querySelector($TODOS).innerHTML = '';
-  document.querySelector($GOALS).innerHTML = '';
-
-  todos.forEach((el) => addTodoToDOM(el)); // todos.forEach(addTodoToDOM);
-  goals.forEach((el) => addGoalToDOM(el)); // goals.forEach(addGoalToDOM);
-});
-
-document.querySelector($TODO_BTN).addEventListener('click', addTodo);
-
-document.querySelector($GOAL_BTN).addEventListener('click', addGoal);
-
-// UI
-function createRemoveBtn(cb) {
-  const node = document.createElement('button');
-  const text = document.createTextNode('X');
-  node.type = 'button';
-  node.appendChild(text);
-
-  node.addEventListener('click', cb);
-
-  return node;
-}
-
-// todo
-function addTodo() {
-  const todo = document.querySelector($TODO_FIELD);
-  const name = todo.value;
-  todo.value = '';
-
-  store.dispatch(
-    addTodoAction({
-      id: generateId(),
-      name,
-      complete: false,
-    }),
-  );
-}
-
-function addTodoToDOM(todo) {
-  const node = document.createElement('li');
-  const text = document.createTextNode(todo.name);
-  const removeBtn = createRemoveBtn(() =>
-    store.dispatch(removeTodoAction(todo.id)),
-  );
-
-  node.appendChild(text);
-  node.appendChild(removeBtn);
-  node.style.textDecoration = todo.complete ? 'line-through' : 'none';
-
-  node.addEventListener('click', () => {
-    store.dispatch(toggleTodoAction(todo.id));
-  });
-
-  document.querySelector($TODOS).appendChild(node);
-}
-
-// goal
-function addGoal() {
-  const goal = document.querySelector($GOAL_FIELD);
-  const name = goal.value;
-  goal.value = '';
-
-  store.dispatch(
-    addGoalAction({
-      id: generateId(),
-      name,
-    }),
-  );
-}
-
-function addGoalToDOM(goal) {
-  const node = document.createElement('li');
-  const text = document.createTextNode(goal.name);
-  const removeBtn = createRemoveBtn(() =>
-    store.dispatch(removeGoalAction(goal.id)),
-  );
-
-  node.appendChild(text);
-  node.appendChild(removeBtn);
-
-  document.querySelector($GOALS).appendChild(node);
-}
